@@ -31,8 +31,6 @@ helm install logging-operator banzaicloud-stable/logging-operator -n observabili
   --set createCustomResource=false \
   --set rbac.enable=true
 
-helm install logging-operator-logging banzaicloud-stable/logging-operator-logging -n observability
-
 
 Cert-Manager for TLS Certificates
 
@@ -107,8 +105,8 @@ kubectl apply -f manifests/efk/es-kibana.yaml -n observability
 ### 8. Deploy Logging Flow using Banzaicloud logging-operator CRDs
 ```
 kubectl apply -f manifests/efk/logging-operator-logging.yaml -n observability
-kubectl apply -f manifests/efk/logging-operator-output.yaml -n observability
-kubectl apply -f manifests/efk/logging-operatorflow.yaml -n observability
+kubectl apply -f manifests/efk/logging-operator-cluster-output.yaml -n observability
+kubectl apply -f manifests/efk/logging-operator-flow.yaml -n site-wordpress
 ```
 
 PS: For testing purposes a script for create cluster in GKE has been added in `manifests/cluster-example`.

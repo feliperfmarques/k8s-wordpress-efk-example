@@ -1,0 +1,13 @@
+gcloud container clusters create px-cluster \
+     --region us-central1 \
+     --node-locations us-central1-a,us-central1-b,us-central1-c \
+     --disk-type=pd-ssd \
+     --disk-size=50GB \
+     --labels=portworx=gke \
+     --machine-type=n1-highcpu-8 \
+     --num-nodes=1 \
+     --min-nodes=3 \
+     --max-nodes=6 \
+     --image-type ubuntu \
+     --scopes compute-rw,storage-ro \
+     --enable-autoscaling --no-enable-stackdriver-kubernetes

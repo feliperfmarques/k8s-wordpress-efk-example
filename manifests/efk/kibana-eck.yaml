@@ -4,7 +4,7 @@ metadata:
   name: logging
 spec:
   version: 7.9.0
-  count: 3
+  count: 1
   elasticsearchRef:
     name: logging
     namespace: observability

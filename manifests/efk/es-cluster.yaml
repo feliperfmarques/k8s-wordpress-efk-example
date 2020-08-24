@@ -12,7 +12,7 @@ spec:
       node.data: false
       node.ingest: false
       node.ml: false
-      xpack.ml.enabled: false
+      xpack.ml.enabled: true
       node.remote_cluster_client: false
     volumeClaimTemplates:
     - metadata:
@@ -24,8 +24,15 @@ spec:
           requests:
             storage: 10Gi
         storageClassName: px-es-master-sc
+    podTemplate:
+      spec:
+        initContainers:
+        - name: sysctl
+          securityContext:
+            privileged: true
+          command: ['sh', '-c', 'sysctl -w vm.max_map_count=262144']
   - name: data-nodes
-    count: 2
+    count: 3
     config:
       node.master: false
       node.data: true
@@ -42,3 +49,10 @@ spec:
           requests:
             storage: 10Gi
         storageClassName: px-es-data-sc
+    podTemplate:
+      spec:
+        initContainers:
+        - name: sysctl
+          securityContext:
+            privileged: true
+          command: ['sh', '-c', 'sysctl -w vm.max_map_count=262144']

@@ -1,0 +1,19 @@
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Output
+metadata:
+  name: logging-site-wordpress-output
+spec:
+  elasticsearch:
+    host: elasticsearch
+    port: 9200
+    scheme: http
+    user: elastic
+    password:
+      valueFrom:
+        secretKeyRef:
+          name: logging-es-elastic-user
+          key: elastic
+    buffer:
+      timekey: 1m
+      timekey_wait: 30s
+      timekey_use_utc: true

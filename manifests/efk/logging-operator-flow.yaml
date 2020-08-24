@@ -1,0 +1,16 @@
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Flow
+metadata:
+  name: wordpress-flow
+spec:
+  filters:
+    - tag_normaliser: {}
+    - parser:
+        remove_key_name_field: true
+        reserve_data: true
+   match:
+     - select:
+         labels:
+           app: wordpress
+  outputRefs:
+    - logging-site-wordpress-output

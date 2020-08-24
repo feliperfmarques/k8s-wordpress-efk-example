@@ -1,0 +1,8 @@
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Logging
+metadata:
+  name: logging-site-wordpress
+spec:
+  fluentd: {}
+  fluentbit: {}
+  controlNamespace: site-wordpress

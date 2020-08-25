@@ -1,6 +1,6 @@
-Wordpress + MySQL + EFK(ElasticSearch + Fluentd + Kibana) + Portworx
+## Wordpress + MySQL + EFK(ElasticSearch + Fluentd + Kibana) + Portworx
 
-This repository contains example code for Deploy - Wordpress + MySQL + EFK(ElasticSearch + Fluentd + Kibana):
+This repository contains example code for Deploy - Wordpress + MySQL + EFK(ElasticSearch + Fluentd + Kibana) + Portworx:
 
 - Portworx
 - Wordpress (Using Storage Portworx)
@@ -16,6 +16,7 @@ This repository contains example code for Deploy - Wordpress + MySQL + EFK(Elast
 ```
 kubectl create ns site-wordpress
 kubectl create ns cert-manager
+kubectl create ns ingress-nginx
 kubectl create ns elastic-system
 kubectl create ns observability
 ```
@@ -46,12 +47,7 @@ Ingress Nginx
 
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
-helm install ingress-nginx ingress-nginx/ingress-nginx
-
-
-ECK Operator (For ElasticSearch & Kibana)
-
-kubectl apply -f https://download.elastic.co/downloads/eck/1.2.1/all-in-one.yaml
+helm install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx
 ```
 
 ### 3. Deploy Portworx
@@ -60,7 +56,13 @@ kubectl apply -f https://download.elastic.co/downloads/eck/1.2.1/all-in-one.yaml
 kubectl apply -f manifests/portworx/portworx_enterprise.yaml
 ```
 
-### 4. Deploy MySQL
+### 4. Deploy ECK Operator (For ElasticSearch & Kibana)
+
+```
+kubectl apply -f https://download.elastic.co/downloads/eck/1.2.1/all-in-one.yaml
+```
+
+### 5. Deploy MySQL
 
 For testing purposes a password will be stored in Kubernetes Secrets, but for production grade deploy, consider to use some secret-manager solution.
 
@@ -72,7 +74,7 @@ kubectl apply -f manifests/mysql/mysql-svc.yaml -n site-wordpress
 kubectl apply -f manifests/mysql/mysql-deployment.yaml -n site-wordpress
 ```
 
-### 5. Setup Cert-Manager and create Certificate
+### 6. Setup Cert-Manager and create Certificate
 
 For testing purposes Certificate and DNS provider secrets will be stored in this Kubernetes Secret, but for production grade deploy, consider to use some secret-manager solution.
 
@@ -81,7 +83,7 @@ kubectl apply -f manifests/cert-manager/issuer.yaml -n site-wordpress
 kubectl apply -f manifests/cert-manager/certificate.yaml -n site-wordpress
 ```
 
-### 6. Deploy Wordpress
+### 7. Deploy Wordpress
 
 ```
 kubectl apply -f manifests/wordpress/wordpress-sc.yaml -n site-wordpress
@@ -91,7 +93,7 @@ kubectl apply -f manifests/wordpress/wordpress-deployment.yaml -n site-wordpress
 kubectl apply -f manifests/wordpress/wordpress-ingres.yaml -n site-wordpress
 ```
 
-### 7. Deploy ElasticSearch Cluster and Kibana using ECK CRDs
+### 8. Setup ElasticSearch Cluster and Kibana using ECK CRDs
 
 Actually with ECK isn't possible to set the password by CRDs. But, thre is a [workarround](https://github.com/elastic/cloud-on-k8s/issues/967#issuecomment-497636249) creating the {clusterName}-es-elastic-user Secret before creating the Elasticsearch resource. For testing purposes a password will be configured in this way, but for production grade deploy, consider to use some secret-manager solution.
 
@@ -102,7 +104,7 @@ kubectl apply -f manifests/efk/es-cluster.yaml -n observability
 kubectl apply -f manifests/efk/es-kibana.yaml -n observability
 ```
 
-### 8. Deploy Logging Flow using Banzaicloud logging-operator CRDs
+### 9. Setup Logging Flow using Banzaicloud logging-operator CRDs
 ```
 kubectl apply -f manifests/efk/logging-operator-logging.yaml -n observability
 kubectl apply -f manifests/efk/logging-operator-cluster-output.yaml -n observability

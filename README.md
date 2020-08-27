@@ -90,7 +90,7 @@ kubectl apply -f manifests/wordpress/wordpress-sc.yaml -n site-wordpress
 kubectl apply -f manifests/wordpress/wordpress-pvc.yaml -n site-wordpress
 kubectl apply -f manifests/wordpress/wordpress-svc.yaml -n site-wordpress
 kubectl apply -f manifests/wordpress/wordpress-deployment.yaml -n site-wordpress
-kubectl apply -f manifests/wordpress/wordpress-ingres.yaml -n site-wordpress
+kubectl apply -f manifests/wordpress/wordpress-ingress.yaml -n site-wordpress
 ```
 
 ### 8. Setup ElasticSearch Cluster and Kibana using ECK CRDs
@@ -101,7 +101,7 @@ Actually with ECK isn't possible to set the password by CRDs. But, thre is a [wo
 kubectl create secret generic logging-es-elastic-user --from-literal=elastic=teste -n observability
 kubectl apply -f manifests/efk/es-sc.yaml -n observability
 kubectl apply -f manifests/efk/es-cluster.yaml -n observability
-kubectl apply -f manifests/efk/es-kibana.yaml -n observability
+kubectl apply -f manifests/efk/kibana-eck.yaml -n observability
 ```
 
 ### 9. Setup Logging Flow using Banzaicloud logging-operator CRDs

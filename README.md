@@ -86,7 +86,7 @@ kubectl apply -f https://download.elastic.co/downloads/eck/1.2.1/all-in-one.yaml
 ```
 kubectl apply -f manifests/mysql/mysql-pvc.yaml -n site-wordpress
 kubectl apply -f manifests/mysql/mysql-svc.yaml -n site-wordpress
-kubectl apply -f manifests/mysql/mysql-deployment.yaml -n site-wordpress
+kubectl apply -f manifests/mysql/mysql-sts.yaml -n site-wordpress
 ```
 
 ### 6. Setup Cert-Manager and create Certificate
@@ -103,7 +103,7 @@ kubectl apply -f manifests/cert-manager/certificate.yaml -n site-wordpress
 ```
 kubectl apply -f manifests/wordpress/wordpress-pvc.yaml -n site-wordpress
 kubectl apply -f manifests/wordpress/wordpress-svc.yaml -n site-wordpress
-kubectl apply -f manifests/wordpress/wordpress-deployment.yaml -n site-wordpress
+kubectl apply -f manifests/wordpress/wordpress-sts.yaml -n site-wordpress
 kubectl apply -f manifests/wordpress/wordpress-ingress.yaml -n site-wordpress
 ```
 

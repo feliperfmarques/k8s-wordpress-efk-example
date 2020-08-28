@@ -17,10 +17,17 @@ spec:
         app: wordpress
         tier: frontend
     spec:
-      securityContext:
-        runAsUser: 0
-        runAsGroup: 0
-        fsGroup: 0
+      initContainers:
+      - name: chown-wp
+        image: busybox:latest
+        command:
+        - /bin/chown
+        - -R
+        - "1001"
+        - /bitnami/wordpress
+        volumeMounts:
+        - name: wordpress-persistent-storage
+          mountPath: /bitnami/wordpress
       containers:
         - name: wordpress
           image: bitnami/wordpress:latest

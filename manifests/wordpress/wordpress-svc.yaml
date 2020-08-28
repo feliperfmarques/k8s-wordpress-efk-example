@@ -7,8 +7,9 @@ metadata:
 spec:
   ports:
     - port: 80
-      nodePort: 30303
+      targetPort: 8080
+      protocol: TCP
+  type: ClusterIP
   selector:
     app: wordpress
     tier: frontend
-  type: NodePort

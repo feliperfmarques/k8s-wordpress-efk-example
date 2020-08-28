@@ -4,17 +4,17 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
   name: site-wordpress
-  namespace: site-wordpress
 spec:
   rules:
-    - host: www.site-wordpress.com
-      http:
-        paths:
-          - backend:
-              serviceName: wordpress
-              servicePort: 80
-            path: /
+  - host: site-wordpress.tk
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: wordpress
+          servicePort: 80
   tls:
-      - hosts:
-          - www.site-wordpress.com
-        secretName: site-wordpress-tls
+  - hosts:
+    - site-wordpress.tk
+    - www.site-wordpress.tk
+    secretName: site-wordpress-tls

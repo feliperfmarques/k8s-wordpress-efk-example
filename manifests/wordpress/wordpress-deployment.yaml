@@ -8,7 +8,7 @@ spec:
   selector:
     matchLabels:
       app: wordpress
-  replicas: 3
+      tier: frontend
   strategy:
     type: Recreate
   template:
@@ -17,27 +17,81 @@ spec:
         app: wordpress
         tier: frontend
     spec:
-      # Use the Stork scheduler to enable more efficient placement of the pods
-      schedulerName: stork
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
       containers:
-      - image: wordpress:4.8-apache
-        name: wordpress
-        imagePullPolicy:
-        env:
-        - name: WORDPRESS_DB_HOST
-          value: wordpress-mysql
-        - name: WORDPRESS_DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-pass
-              key: password.txt
-        ports:
-        - containerPort: 80
-          name: wordpress
-        volumeMounts:
-        - name: wordpress-persistent-storage
-          mountPath: /var/www/html
+        - name: wordpress
+          image: bitnami/wordpress:latest
+          env:
+          - name: MARIADB_HOST
+            value: wordpress-mysql
+          - name: MARIADB_PORT
+            value: "3306"
+          - name: WORDPRESS_DATABASE_USER
+            value: wordpress
+          - name: WORDPRESS_DATABASE_NAME
+            value: wordpress
+          - name: WORDPRESS_DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: site-wordpress-secrets
+                key: wordpress_database_password
+          - name: WORDPRESS_BLOG_NAME
+            value: wordpress-site
+          - name: WORDPRESS_USERNAME
+            value: admin
+          - name: WORDPRESS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: site-wordpress-secrets
+                key: wordpress_password
+          volumeMounts:
+          - name: wordpress-persistent-storage
+            mountPath: /bitnami/wordpress
       volumes:
       - name: wordpress-persistent-storage
         persistentVolumeClaim:
-          claimName: px-wp-pvc
+          claimName: wp-pv-claim
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: wordpress
+#   labels:
+#     app: wordpress
+# spec:
+#   selector:
+#     matchLabels:
+#       app: wordpress
+#   replicas: 1
+#   strategy:
+#     type: Recreate
+#   template:
+#     metadata:
+#       labels:
+#         app: wordpress
+#         tier: frontend
+#     spec:
+#       containers:
+#       - image: wordpress:4.8-apache
+#         name: wordpress
+#         imagePullPolicy:
+#         env:
+#         - name: WORDPRESS_DB_HOST
+#           value: wordpress-mysql
+#         - name: WORDPRESS_DB_PASSWORD
+#           valueFrom:
+#             secretKeyRef:
+#               name: mysql-pass
+#               key: a
+#         ports:
+#         - containerPort: 80
+#           name: wordpress
+#         volumeMounts:
+#         - name: wordpress-persistent-storage
+#           mountPath: /var/www/html
+#       volumes:
+#       - name: wordpress-persistent-storage
+#         persistentVolumeClaim:
+#           claimName: wp-pv-claim

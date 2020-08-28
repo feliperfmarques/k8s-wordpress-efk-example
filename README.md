@@ -2,6 +2,8 @@
 
 This repository contains example code for Deploy - Wordpress + MySQL + EFK(ElasticSearch + Fluentd + Kibana):
 
+Example(for tests in ssllabs): [https://site-wordpress.tk/](https://site-wordpress.tk/)
+
 - Wordpress
 - MySQL
 - ElasticSearch (Using Elastic Cloud on Kubernetes - ECK)

@@ -1,10 +1,9 @@
-## Wordpress + MySQL + EFK(ElasticSearch + Fluentd + Kibana) + Portworx
+## Wordpress + MySQL + EFK(ElasticSearch + Fluentd + Kibana)
 
-This repository contains example code for Deploy - Wordpress + MySQL + EFK(ElasticSearch + Fluentd + Kibana) + Portworx:
+This repository contains example code for Deploy - Wordpress + MySQL + EFK(ElasticSearch + Fluentd + Kibana):
 
-- Portworx
-- Wordpress (Using Storage Portworx)
-- MySQL (Using Storage Portworx)
+- Wordpress
+- MySQL
 - ElasticSearch (Using Elastic Cloud on Kubernetes - ECK)
 - Fluentd + Fluentbit (Using Helm chart Banzaicloud logging-operator-logging)
 - Logging Flow (Using Helm Chart Banzaicloud logging-operator)
@@ -50,10 +49,28 @@ helm repo update
 helm install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx
 ```
 
-### 3. Deploy Portworx
+### 3. Create Secrets for Wordpress, MySQL and ElasticSearch
 
 ```
-kubectl apply -f manifests/portworx/portworx_enterprise.yaml
+Wordpress and MySQL secrets 
+
+For testing purposes a password will be stored in Kubernetes Secrets, but for production grade deploy, consider to use some secret-manager solution.
+
+cat <<'EOF' >> secrets.txt
+wordpress_database_root_password=teste
+wordpress_database_password=teste
+wordpress_password=teste
+EOF
+
+kubectl create secret generic site-wordpress-secrets -n site-wordpress --from-env-file=secrets.txt
+
+
+Elasticsearch secrets
+
+Actually with ECK isn't possible to set the password by CRDs. But, thre is a [workarround](https://github.com/elastic/cloud-on-k8s/issues/967#issuecomment-497636249) creating the {clusterName}-es-elastic-user Secret before creating the Elasticsearch resource. For testing purposes a password will be configured in this way, but for production grade deploy, consider to use some secret-manager solution.
+
+
+kubectl create secret generic logging-es-elastic-user --from-literal=elastic=teste -n observability
 ```
 
 ### 4. Deploy ECK Operator (For ElasticSearch & Kibana)
@@ -64,11 +81,7 @@ kubectl apply -f https://download.elastic.co/downloads/eck/1.2.1/all-in-one.yaml
 
 ### 5. Deploy MySQL
 
-For testing purposes a password will be stored in Kubernetes Secrets, but for production grade deploy, consider to use some secret-manager solution.
-
 ```
-kubectl create secret generic mysql-pass --from-file=./password.txt -n site-wordpress
-kubectl apply -f manifests/mysql/mysql-sc.yaml -n site-wordpress
 kubectl apply -f manifests/mysql/mysql-pvc.yaml -n site-wordpress
 kubectl apply -f manifests/mysql/mysql-svc.yaml -n site-wordpress
 kubectl apply -f manifests/mysql/mysql-deployment.yaml -n site-wordpress
@@ -86,7 +99,6 @@ kubectl apply -f manifests/cert-manager/certificate.yaml -n site-wordpress
 ### 7. Deploy Wordpress
 
 ```
-kubectl apply -f manifests/wordpress/wordpress-sc.yaml -n site-wordpress
 kubectl apply -f manifests/wordpress/wordpress-pvc.yaml -n site-wordpress
 kubectl apply -f manifests/wordpress/wordpress-svc.yaml -n site-wordpress
 kubectl apply -f manifests/wordpress/wordpress-deployment.yaml -n site-wordpress
@@ -95,11 +107,7 @@ kubectl apply -f manifests/wordpress/wordpress-ingress.yaml -n site-wordpress
 
 ### 8. Setup ElasticSearch Cluster and Kibana using ECK CRDs
 
-Actually with ECK isn't possible to set the password by CRDs. But, thre is a [workarround](https://github.com/elastic/cloud-on-k8s/issues/967#issuecomment-497636249) creating the {clusterName}-es-elastic-user Secret before creating the Elasticsearch resource. For testing purposes a password will be configured in this way, but for production grade deploy, consider to use some secret-manager solution.
-
 ```
-kubectl create secret generic logging-es-elastic-user --from-literal=elastic=teste -n observability
-kubectl apply -f manifests/efk/es-sc.yaml -n observability
 kubectl apply -f manifests/efk/es-cluster.yaml -n observability
 kubectl apply -f manifests/efk/kibana-eck.yaml -n observability
 ```

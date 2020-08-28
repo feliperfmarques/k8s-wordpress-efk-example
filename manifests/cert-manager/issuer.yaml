@@ -4,12 +4,17 @@ metadata:
   name: site-wordpress-issuer
 spec:
   acme:
-    email: admin@example.com
+    email: email@here
     server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      # Secret resource used to store the account's private key.
+      name: site-wordpress-issuer-key
     solvers:
     - dns01:
         clouddns:
-          project: site-wordpress
+          # The ID of the GCP project
+          project: project_here
+          # This is the secret used to access the service account
           serviceAccountSecretRef:
-            name: prod-cloud-dns-secret
-            key: service-account.json
+            name: clouddns-dns01-solver-svc-acct
+            key: key.json

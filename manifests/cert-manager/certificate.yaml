@@ -7,5 +7,5 @@ spec:
   issuerRef:
     name: site-wordpress-issuer
   dnsNames:
-  - site-wordpress.com
-  - www.site-wordpress.com
+  - site-wordpress.tk
+  - www.site-wordpress.tk

@@ -45,6 +45,8 @@ spec:
               secretKeyRef:
                 name: site-wordpress-secrets
                 key: wordpress_database_password
+          - name: WORDPRESS_SCHEME
+            value: https
           - name: WORDPRESS_BLOG_NAME
             value: wordpress-site
           - name: WORDPRESS_USERNAME

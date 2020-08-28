@@ -17,20 +17,24 @@ spec:
         app: wordpress
         tier: mysql
     spec:
-      # Use the Stork scheduler to enable more efficient placement of the pods
-      schedulerName: stork
       containers:
       - image: mysql:5.6
-        imagePullPolicy:
         name: mysql
         env:
-          # $ kubectl create secret generic mysql-pass --from-file=password.txt
-          # make sure password.txt does not have a trailing newline
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-pass
-              key: password.txt
+              name: site-wordpress-secrets
+              key: wordpress_database_root_password
+        - name: MYSQL_DATABASE
+          value: wordpress
+        - name: MYSQL_USER
+          value: wordpress
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: site-wordpress-secrets
+              key: wordpress_database_password
         ports:
         - containerPort: 3306
           name: mysql
@@ -40,4 +44,4 @@ spec:
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
-          claimName: px-mysql-pvc
+          claimName: mysql-pv-claim
